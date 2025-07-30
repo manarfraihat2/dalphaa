@@ -1,9 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { auth, db } from '@/firebase/firebaseConfig';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface UserType {
   uid: string;
@@ -17,6 +14,7 @@ interface AuthContextType {
   loading: boolean;
   openLogin: boolean;
   setOpenLogin: (value: boolean) => void;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -34,66 +32,37 @@ export function useAuth() {
 
 export default function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<UserType | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [openLogin, setOpenLogin] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [openLogin, setOpenLogin] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (!isMounted) return;
-
-      if (!firebaseUser) {
-        setUser(null);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const docRef = doc(db, 'users', firebaseUser.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (!isMounted) return;
-
-        const role = docSnap.exists() ? docSnap.data()?.role || 'buyer' : 'buyer';
-        const photoURL =
-          (docSnap.exists() && docSnap.data()?.profilePicture) ||
-          firebaseUser.photoURL ||
-          '/images/icons/profile.png';
-
+  // محاكاة تسجيل الدخول (بدون Firebase)
+  const login = async (email: string, password: string) => {
+    setLoading(true);
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
         setUser({
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          role,
-          photoURL,
+          uid: '123456',
+          email,
+          role: 'buyer',
+          photoURL: '/images/icons/profile.png',
         });
-      } catch (error) {
-        if (!isMounted) return;
-        console.error('AuthProvider error:', error);
-        setUser(null);
-        setOpenLogin(true);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
+        setOpenLogin(false);
+        setLoading(false);
+        resolve();
+      }, 1000); // محاكاة تأخير
     });
+  };
 
-    return () => {
-      isMounted = false;
-      unsubscribe();
-    };
-  }, []);
-
+  // تسجيل خروج محاكاة
   const logout = async () => {
-    try {
-      await signOut(auth);
-    } finally {
-      setUser(null);
-      setOpenLogin(true);
-    }
+    setUser(null);
+    setOpenLogin(true);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, openLogin, setOpenLogin, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, openLogin, setOpenLogin, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
