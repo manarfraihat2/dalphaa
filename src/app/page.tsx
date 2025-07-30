@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Paper, Button, Alert, TextField, Grid } from '@mui/material';
+import { Box, Typography, Paper, Button, Alert, TextField } from '@mui/material';
 import NavBar from '@/components/NavBar';
 import BottomNav from '@/components/BottomNav';
 
@@ -98,52 +98,72 @@ export default function HomePage() {
           ))}
         </Box>
 
-        {/* قسم التواصل */}
+        {/* قسم التواصل - باستخدام Flexbox */}
         <Typography variant="h4" gutterBottom color="primary" sx={{ mb: 3 }}>
           Contact Us
         </Typography>
 
-        <Grid container spacing={4} justifyContent="center">
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' }, // عمودي على الشاشات الصغيرة وأفقي على الكبيرة
+            gap: 4,
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+          }}
+        >
           {/* نموذج الاتصال */}
-          <Grid item xs={12} md={6}>
-            <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-              <form>
-                <TextField label="Name" fullWidth margin="normal" required />
-                <TextField label="Email" type="email" fullWidth margin="normal" required />
-                <TextField
-                  label="Message"
-                  fullWidth
-                  margin="normal"
-                  multiline
-                  rows={4}
-                  required
-                />
-                <Button variant="contained" type="submit" sx={{ mt: 2 }}>
-                  Send Message
-                </Button>
-              </form>
-            </Paper>
-          </Grid>
+          <Paper
+            elevation={3}
+            sx={{
+              flex: 1,
+              minWidth: 280,
+              maxWidth: 450,
+              p: 3,
+              borderRadius: 2,
+            }}
+          >
+            <form>
+              <TextField label="Name" fullWidth margin="normal" required />
+              <TextField label="Email" type="email" fullWidth margin="normal" required />
+              <TextField
+                label="Message"
+                fullWidth
+                margin="normal"
+                multiline
+                rows={4}
+                required
+              />
+              <Button variant="contained" type="submit" sx={{ mt: 2 }}>
+                Send Message
+              </Button>
+            </form>
+          </Paper>
 
           {/* خريطة الموقع */}
-          <Grid item xs={12} md={6}>
-            <Paper
-              elevation={3}
-              sx={{ borderRadius: 2, height: '100%', overflow: 'hidden' }}
-            >
-              <iframe
-                title="Company Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3105.0018688022147!2d14.417204115241872!3d50.08804017942978!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b94f85571be53%3A0x33a0131774a3f788!2sRybn%C3%A1%20716%2F24%2C%20110%2000%20Praha%2C%20Czechia!5e0!3m2!1sen!2sus!4v1690599603248!5m2!1sen!2sus"
-                width="100%"
-                height="350"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </Paper>
-          </Grid>
-        </Grid>
+          <Paper
+            elevation={3}
+            sx={{
+              flex: 1,
+              minWidth: 280,
+              maxWidth: 450,
+              borderRadius: 2,
+              height: 350,
+              overflow: 'hidden',
+            }}
+          >
+            <iframe
+              title="Company Location"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3105.0018688022147!2d14.417204115241872!3d50.08804017942978!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b94f85571be53%3A0x33a0131774a3f788!2sRybn%C3%A1%20716%2F24%2C%20110%2000%20Praha%2C%20Czechia!5e0!3m2!1sen!2sus!4v1690599603248!5m2!1sen!2sus"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </Paper>
+        </Box>
       </Box>
 
       <BottomNav />
